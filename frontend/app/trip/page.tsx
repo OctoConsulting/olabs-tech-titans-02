@@ -1,13 +1,9 @@
-import Chat from "@/components/prebuilt/chat";
-import ChartContent from "@/components/prebuilt/charts";
+import Chat from "@/components/prebuilt/chat-trip";
 // import Charts from "./@charts/page"
-import { EndpointsContext } from "./agent";
-import { EndpointsContext as EndpointsContextChart} from "@/app/charts/agent";
 
 export default function Home() {
   return (
-    <main className="flex h-screen flex-col items-center">
-      <div className="w-full min-w-[100px] flex flex-col">
+      <div className="w-full">
         {/* <p className="text-[28px] text-center font-medium">
           Generative UI with{" "}
           <a
@@ -19,7 +15,7 @@ export default function Home() {
           </a>
         </p> */}
         <Chat/>
+        
       </div>
-    </main>
   );
 }

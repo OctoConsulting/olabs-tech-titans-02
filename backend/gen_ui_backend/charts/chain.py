@@ -65,7 +65,8 @@ to be converted into a structured query. Today is July 25 2024.""",
     )
     chain = prompt | model
     result = chain.invoke(input=state["input"]["content"])
-
+    print(state['input'])
+    print(result)
     return {
         "selected_filters": result,
     }
