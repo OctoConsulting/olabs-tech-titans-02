@@ -36,11 +36,73 @@ In this section, you can describe the features your solution has.
 
 ## Installation
 
-In this section, you can describe how to get started with your solution. This could include configuring the environment and your solution, installing prerequisites, etc.
+First, clone the repository and install dependencies:
+
+```bash
+git clone https://github.com/bracesproul/gen-ui-python.git
+
+cd gen-ui-python
+```
+
+Install dependencies in the `frontend` and `backend` directories:
+
+```bash
+cd ./frontend
+
+yarn install
+```
+
+```bash
+cd ../backend
+
+poetry install
+```
+
+### Secrets
+
+Next, if you plan on using the existing pre-built UI components, you'll need to set a few environment variables:
+
+Copy the [`.env.example`](./backend/.env.example) file to `.env` inside the `backend` directory.
+
+LangSmith keys are optional, but highly recommended if you plan on developing this application further.
+
+The `OPENAI_API_KEY` is required. Get your OpenAI API key from the [OpenAI dashboard](https://platform.openai.com/login?launch).
+
+[Sign up/in to LangSmith](https://smith.langchain.com/) and get your API key.
+
+Create a new [GitHub PAT (Personal Access Token)](https://github.com/settings/tokens/new) with the `repo` scope.
+
+[Create a free Geocode account](https://geocode.xyz/api).
+
+```bash
+# ------------------LangSmith tracing------------------
+LANGCHAIN_API_KEY=...
+LANGCHAIN_CALLBACKS_BACKGROUND=true
+LANGCHAIN_TRACING_V2=true
+# -----------------------------------------------------
+
+GITHUB_TOKEN=...
+OPENAI_API_KEY=...
+GEOCODE_API_KEY=...
+```
 
 ## Usage
 
-In this section, you can describe how to use the solution.
+```bash
+cd ./frontend
+
+yarn dev
+```
+
+This will start a development server on [`http://localhost:3000`](http://localhost:3000).
+
+Then, in a new terminal window:
+
+```bash
+cd ../backend
+
+poetry run start
+```
 
 ## Examples
 
