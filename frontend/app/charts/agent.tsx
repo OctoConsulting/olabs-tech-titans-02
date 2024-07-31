@@ -3,7 +3,7 @@ import {
   exposeEndpoints,
   EventHandlerFields,
 } from "@/utils/server";
-import { Filter, Order } from "./schema";
+import { Filter, Fruits } from "./schema";
 import { Client } from "@langchain/langgraph-sdk";
 import { RunnableLambda } from "@langchain/core/runnables";
 import { RemoteRunnable } from "@langchain/core/runnables/remote";
@@ -36,8 +36,9 @@ const API_URL = "http://localhost:8000/charts";
 
 type FilterGraphInput = {
   input: string;
-  orders: Order[];
+  fruits: Fruits[];
   display_formats: Omit<DataDisplayTypeAndDescription, "propsFn">[];
+  
 };
 type FilterGraphRunnableInput = Omit<FilterGraphInput, "input"> & {
   input: { content: string };
@@ -107,7 +108,7 @@ function handleChartType(
 
 function handleConstructingCharts(
   input: {
-    orders: Order[];
+    orders: Fruits[];
     chartType: ChartType;
     displayFormat: string;
   },
@@ -205,7 +206,7 @@ function handleDisplayFormat(
 }
 
 
-function updateTable(orders: Order[]){
+function updateTable(orders: Fruits[]){
 
 }
 

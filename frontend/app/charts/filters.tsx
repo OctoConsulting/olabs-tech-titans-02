@@ -1,5 +1,5 @@
 import { PieChartProps, BarChartProps, LineChartProps } from "@/lib/mui";
-import { Filter, Order } from "./schema";
+import { Filter, Fruits } from "./schema";
 
 export type ChartType = "bar" | "line" | "pie" | "table";
 
@@ -23,16 +23,16 @@ export type DataDisplayTypeAndDescription = {
   /**
    * The function to use to construct the props for the chart.
    */
-  propsFn: (orders: Order[]) => BarChartProps | PieChartProps | LineChartProps;
+  propsFn: (fruits: Fruits[]) => BarChartProps | PieChartProps | LineChartProps;
 };
 
 export const DISPLAY_FORMATS: Array<DataDisplayTypeAndDescription> = [
   {
     key: "bar_order_amount_by_product",
-    title: "Order Amount by Product Name",
+    title: "Average Retail Price by Fruit",
     chartType: "bar",
     description:
-      "X-axis: Product Name (productName)\nY-axis: Order Amount (amount)\nThis chart would show the total sales for each product.",
+      "X-axis: Fruit (name)\nY-axis: Average Retail Price (averagePrice)\nThis chart would show the average retail price for each fruit.",
     propsFn: constructProductSalesBarChartProps,
   },
   {
@@ -127,76 +127,42 @@ export const DISPLAY_FORMATS: Array<DataDisplayTypeAndDescription> = [
 
 export function filterOrders(state: {
   selectedFilters: Partial<Filter>;
-  orders: Order[];
-}): { orders: Order[] } {
+  fruits: Fruits[];
+}): { fruits: Fruits[] } {
   const {
-    productNames,
-    beforeDate,
-    afterDate,
-    minAmount,
-    maxAmount,
-    state: orderState,
-    city,
-    discount,
-    minDiscountPercentage,
-    status,
+    name,
+    form,
+    
   } = state.selectedFilters;
 
-  if (minDiscountPercentage !== undefined && discount === false) {
-    throw new Error(
-      "Can not filter by minDiscountPercentage when discount is false.",
-    );
-  }
+  // if (minDiscountPercentage !== undefined && discount === false) {
+  //   throw new Error(
+  //     "Can not filter by minDiscountPercentage when discount is false.",
+  //   );
+  // }
 
-  let filteredOrders = state.orders.filter((order) => {
+  let filteredOrders = state.fruits.filter((fruit) => {
     let isMatch = true;
 
     if (
-      productNames &&
-      !productNames.includes(order.productName.toLowerCase())
+      name &&
+      !name.includes(fruit.name.toLowerCase())
     ) {
-      isMatch = false;
-    }
-
-    if (beforeDate && order.orderedAt > beforeDate) {
-      isMatch = false;
-    }
-    if (afterDate && order.orderedAt < afterDate) {
-      isMatch = false;
-    }
-    if (minAmount && order.amount < minAmount) {
-      isMatch = false;
-    }
-    if (maxAmount && order.amount > maxAmount) {
       isMatch = false;
     }
     if (
-      orderState &&
-      order.address.state.toLowerCase() !== orderState.toLowerCase()
+      form &&
+      !form.includes(fruit.form.toLowerCase())
     ) {
       isMatch = false;
     }
-    if (city && order.address.city.toLowerCase() !== city.toLowerCase()) {
-      isMatch = false;
-    }
-    if (discount !== undefined && (order.discount === undefined) !== discount) {
-      isMatch = false;
-    }
-    if (
-      minDiscountPercentage !== undefined &&
-      (order.discount === undefined || order.discount < minDiscountPercentage)
-    ) {
-      isMatch = false;
-    }
-    if (status && order.status.toLowerCase() !== status) {
-      isMatch = false;
-    }
+    
 
     return isMatch;
   });
 
   return {
-    orders: filteredOrders,
+    fruits: filteredOrders,
   };
 }
 
@@ -206,30 +172,36 @@ X-axis: Product Name (productName)
 Y-axis: Order Amount (amount)
 This chart would show the total sales for each product.
  */
+
+// rename - average retail price per fruit
 export function constructProductSalesBarChartProps(
-  orders: Order[],
+  fruits: Fruits[],
 ): BarChartProps {
-  const salesByProduct = orders.reduce(
-    (acc, order) => {
-      if (!acc[order.productName]) {
-        acc[order.productName] = 0;
+  const salesByProduct = fruits.reduce(
+    (acc, fruit) => {
+      if (!acc[fruit.name]) {
+        acc[fruit.name] = {price: 0, count:0};
       }
-      acc[order.productName] += order.amount;
+      acc[fruit.name].price += fruit.retailPrice;
+      acc[fruit.name].count += 1
+      
+
       return acc;
     },
-    {} as Record<string, number>,
+    {} as Record<string, {price: number, count: number}>,
   );
 
   const dataset = Object.entries(salesByProduct)
-    .map(([productName, totalSales]) => ({ productName, totalSales }))
-    .sort((a, b) => b.totalSales - a.totalSales);
+    .map(([name, {price, count}]) => ({ name, averagePrice: count > 0? price / (count * 100): 0, }))
+    .sort((a, b) => b.averagePrice - a.averagePrice);
 
   return {
-    xAxis: [{ scaleType: "band", dataKey: "productName" }],
+    xAxis: [{ scaleType: "band", dataKey: "name" }],
+    yAxis: [{scaleType: "linear", max:10}],
     series: [
       {
-        dataKey: "totalSales",
-        label: "Total Sales",
+        dataKey: "averagePrice",
+        label: "Average Price",
       },
     ],
     dataset,

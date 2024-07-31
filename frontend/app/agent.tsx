@@ -11,7 +11,7 @@ import {
 } from "@/components/prebuilt/weather";
 import { createStreamableUI, createStreamableValue } from "ai/rsc";
 import { AIMessage } from "@/ai/message";
-import { Filter, Order } from "./charts/schema";
+import { Filter, Fruits } from "./charts/schema";
 import {
   ChartType,
   DISPLAY_FORMATS,
@@ -50,7 +50,7 @@ type ToolComponentMap = {
 
 type FilterGraphInput = {
   input: string;
-  orders: Order[];
+  fruits: Fruits[];
   display_formats: Omit<DataDisplayTypeAndDescription, "propsFn">[];
   chat_history: [role: string, content: string][];
 };
@@ -174,7 +174,7 @@ function handleChartType(
 
 function handleConstructingCharts(
   input: {
-    orders: Order[];
+    fruits: Fruits[];
     chartType: ChartType;
     displayFormat: string;
   },
@@ -191,7 +191,7 @@ function handleConstructingCharts(
       );
     }
     let barChart;
-    const props = displayDataObj.propsFn(input.orders);
+    const props = displayDataObj.propsFn(input.fruits);
     if (input.chartType === "bar") {
       barChart = <BarChart {...(props as BarChartProps)} />;
     } else if (input.chartType === "pie") {
@@ -277,7 +277,7 @@ async function agent(inputs: FilterGraphInput) {
       displayFormat = data.output.display_format;
       return handleDisplayFormat(displayFormat, chartType, fields.ui);
     } else if (name === "filter_data") {
-      const { orders } = data.output;
+      const { fruits } = data.output;
       if ((chartType != 'table' && !displayFormat) || !chartType) {
         throw new Error(
           "Chart type and display format must be set before filtering data",
@@ -285,7 +285,7 @@ async function agent(inputs: FilterGraphInput) {
       }
       return handleConstructingCharts(
         {
-          orders,
+          fruits,
           chartType,
           displayFormat,
         },
