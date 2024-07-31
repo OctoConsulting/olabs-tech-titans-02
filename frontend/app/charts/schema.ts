@@ -1,63 +1,19 @@
 import { z } from "zod";
 
-export interface Order {
+export interface Fruits{
   /**
    * A UUID for the order.
    */
-  id: string;
+  name: string;
   /**
    * The name of the product purchased.
    */
-  productName: string;
+  form: string;
   /**
    * The amount of the order.
    */
-  amount: number;
-  /**
-   * The percentage of the discount applied to the order.
-   * This is between 0 and 100.
-   * Not defined if no discount was applied.
-   */
-  discount?: number;
-  /**
-   * The address the order was shipped to.
-   */
-  address: {
-    /**
-     * The address street.
-     * @example "123 Main St"
-     */
-    street: string;
-    /**
-     * The city the order was shipped to.
-     * @example "San Francisco"
-     */
-    city: string;
-    /**
-     * The state the order was shipped to.
-     * @example "California"
-     */
-    state: string;
-    /**
-     * The zip code the order was shipped to.
-     * @example "94105"
-     */
-    zip: string;
-  };
-  /**
-   * The current status of the order.
-   */
-  status:
-    | "pending"
-    | "processing"
-    | "shipped"
-    | "delivered"
-    | "cancelled"
-    | "returned";
-  /**
-   * The date the order was placed.
-   */
-  orderedAt: Date;
+  retailPrice: number;
+  
 }
 
 export const filterSchema = (productNames: string[]) => {
@@ -133,20 +89,8 @@ export const filterSchema = (productNames: string[]) => {
 };
 
 export interface Filter {
-  productNames?: string[];
-  beforeDate?: Date;
-  afterDate?: Date;
-  minAmount?: number;
-  maxAmount?: number;
-  state?: string;
-  city?: string;
-  discount?: boolean;
-  minDiscountPercentage?: number;
-  status?:
-    | "pending"
-    | "processing"
-    | "shipped"
-    | "delivered"
-    | "cancelled"
-    | "returned";
+  name?: string;
+  form?: string;
+  retailPrice?: string;
+  
 }

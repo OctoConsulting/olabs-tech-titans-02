@@ -13,9 +13,9 @@ import {
 import { Suspense, useEffect, useState } from "react";
 import { useActions } from "@/utils/client";
 import { EndpointsContext } from "./agent";
-import { Filter, Order, filterSchema } from "./schema";
+import { Filter, Fruits, filterSchema } from "./schema";
 import { LocalContext } from "../shared";
-import { generateOrders } from "./generate-orders";
+import { generateFruits } from "./generate-orders";
 import {
   ChartType,
   DISPLAY_FORMATS,
@@ -32,29 +32,29 @@ import { FilterOptionsDialog } from "@/components/prebuilt/filter-options-dialog
 import OrderTable from "./data-table";
 
 
-const LOCAL_STORAGE_ORDERS_KEY = "orders";
+const LOCAL_STORAGE_ORDERS_KEY = "fruits2";
 
 const getFiltersFromUrl = (
   searchParams: URLSearchParams,
-  orders: Order[],
+  fruits: Fruits[],
 ): Partial<Filter> => {
   const productNames = Array.from(
-    new Set<string>(orders.map(({ productName }) => productName)),
+    new Set<string>(fruits.map(({ name }) => name)),
   );
-  const possibleFilters = filterSchema(productNames);
-  const filterKeys = Object.keys(possibleFilters.shape);
+  // const possibleFilters = filterSchema(productNames);
+  // const filterKeys = Object.keys(possibleFilters.shape);
   const filters: Record<string, any> = {};
 
-  filterKeys.forEach((key) => {
-    const value = searchParams.get(snakeCase(key));
-    if (value) {
-      try {
-        filters[key as any] = decodeURIComponent(value);
-      } catch (error) {
-        console.error(`Error parsing URL parameter for ${key}:`, error);
-      }
-    }
-  });
+  // filterKeys.forEach((key) => {
+  //   const value = searchParams.get(snakeCase(key));
+  //   if (value) {
+  //     try {
+  //       filters[key as any] = decodeURIComponent(value);
+  //     } catch (error) {
+  //       console.error(`Error parsing URL parameter for ${key}:`, error);
+  //     }
+  //   }
+  // });
 
   return filters;
 };
@@ -142,41 +142,41 @@ function ChartContent() {
 
   const [loading, setLoading] = useState(false);
   const [elements, setElements] = useState<JSX.Element[]>([]);
-  const [orders, setOrders] = useState<Order[]>([]);
+  const [fruits, setFruits] = useState<Fruits[]>([]);
   const [selectedFilters, setSelectedFilters] = useState<Partial<Filter>>();
   const [selectedChartType, setSelectedChartType] = useState<ChartType>("bar");
   const [currentFilter, setCurrentFilter] = useState("");
   const [currentDisplayFormat, setCurrentDisplayFormat] =
     useState<DataDisplayTypeAndDescription>();
-  const [filteredOrders, setFilteredOrders] = useState<Order[]>([]);
+  const [filteredOrders, setFilteredOrders] = useState<Fruits[]>([]);
 
 
   // Load the orders from local storage or generate them if they don't exist.
   useEffect(() => {
-    if (orders.length > 0) {
+    if (fruits.length > 0) {
       return;
     }
-    const localStorageOrders = localStorage.getItem(LOCAL_STORAGE_ORDERS_KEY);
-    let ordersV: Order[] = [];
-    if (!localStorageOrders || JSON.parse(localStorageOrders).length === 0) {
-      const fakeOrders = generateOrders();
-      ordersV = fakeOrders;
-      setOrders(fakeOrders);
+    const localStorageFruits = localStorage.getItem(LOCAL_STORAGE_ORDERS_KEY);
+    let ordersV: Fruits[] = [];
+    if (!localStorageFruits || JSON.parse(localStorageFruits).length === 0) {
+      const fakeFruits = generateFruits();
+      ordersV = fakeFruits;
+      setFruits(fakeFruits);
       localStorage.setItem(
         LOCAL_STORAGE_ORDERS_KEY,
-        JSON.stringify(fakeOrders),
+        JSON.stringify(fakeFruits),
       );
     } else {
-      ordersV = JSON.parse(localStorageOrders);
-      setOrders(ordersV);
+      ordersV = JSON.parse(localStorageFruits);
+      setFruits(ordersV);
     }
 
     // Set the chart on fresh load. Use either the chartType from the URL or the default.
     // Also extract any filters to apply to the chart.
     const selectedChart = searchParams.get("chartType") || selectedChartType;
   const filters = getFiltersFromUrl(searchParams, ordersV);
-  const { orders: filteredOrders } = filterOrders({
-    orders: ordersV,
+  const { fruits: filteredOrders } = filterOrders({
+    fruits: ordersV,
     selectedFilters: filters,
   });
   setFilteredOrders(filteredOrders ?? ordersV); 
@@ -190,7 +190,9 @@ function ChartContent() {
         if (!displayFormatBar) {
           throw new Error("Something went wrong.");
         }
+        console.log(ordersV);
         return setElements([
+         
           <div className="mt-4 mb-6 text-center">
             <h2 className="text-xl font-semibold text-gray-800 mb-2">
               {displayFormatBar.title}
@@ -209,7 +211,7 @@ function ChartContent() {
             />
             </div>
             <div className="w-full overflow-auto">
-              <OrderTable orders={filteredOrders} />
+              {/* <OrderTable orders={filteredOrders} /> */}
             </div>
           </div>
         ]);
@@ -262,7 +264,7 @@ function ChartContent() {
           />,
         ]);
     }
-  }, [orders.length, searchParams, selectedChartType]);
+  }, [fruits.length, searchParams, selectedChartType]);
 
   // Update the URL with the selected filters and chart type.
   useEffect(() => {
@@ -281,7 +283,7 @@ function ChartContent() {
         encodedValue = encodeURIComponent(JSON.stringify(value));
       } else if (typeof value === "object") {
         if (Object.keys(value).length > 0) {
-          encodedValue = encodeURIComponent(value.toISOString());
+          encodedValue = encodeURIComponent(value);
         }
       } else if (["string", "number", "boolean"].includes(typeof value)) {
         encodedValue = encodeURIComponent(value as string | number | boolean);
@@ -306,7 +308,7 @@ function ChartContent() {
     setCurrentFilter(input);
     const element = await actions.filterGraph({
       input,
-      orders,
+      fruits,
       display_formats: DISPLAY_FORMATS.map((d) => ({
         title: d.title,
         description: d.description,
@@ -375,7 +377,7 @@ function ChartContent() {
             </div>
             <div className="flex flex-col w-full gap-4">
               {/* Chart container */}
-              <div className="w-full h-[500px] overflow-auto">
+              <div className="w-full h-[700px] overflow-auto">
                 {elements}
               </div>
               
