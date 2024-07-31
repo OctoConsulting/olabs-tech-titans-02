@@ -192,12 +192,12 @@ export function constructProductSalesBarChartProps(
   );
 
   const dataset = Object.entries(salesByProduct)
-    .map(([name, {price, count}]) => ({ name, averagePrice: count > 0? price / count: 0, }))
+    .map(([name, {price, count}]) => ({ name, averagePrice: count > 0? price / (count * 100): 0, }))
     .sort((a, b) => b.averagePrice - a.averagePrice);
 
   return {
     xAxis: [{ scaleType: "band", dataKey: "name" }],
-    yAxis: [{scaleType: "linear", max:1000}],
+    yAxis: [{scaleType: "linear", max:10}],
     series: [
       {
         dataKey: "averagePrice",
