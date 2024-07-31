@@ -90,6 +90,13 @@ function SmartFilter(props: SmartFilterProps) {
     setInput("");
   };
 
+  const handleKeyDown = (event) => {
+    if (event.key === 'Enter') {
+      event.preventDefault(); // Prevents default Enter key behavior (new line)
+      handleSubmit(event); // Trigger form submission
+    }
+  };
+
   const ButtonContent = () => {
     if (props.loading) {
       return (
@@ -109,14 +116,17 @@ function SmartFilter(props: SmartFilterProps) {
       </span>
     );
   };
-
+//TODO
   return (
     <form onSubmit={handleSubmit} className="flex flex-row gap-1">
-      <Input
+      <textarea
         disabled={props.loading}
         value={input}
         onChange={(e) => setInput(e.target.value)}
         placeholder="Magic filter"
+        className="w-full h-32 p-4 text-sm resize-none border border-gray-300 rounded-lg"
+        rows={4}
+        onKeyDown={handleKeyDown} // Add key down handler
       />
       <Button disabled={props.loading} type="submit" variant="outline">
         <ButtonContent />
@@ -346,33 +356,41 @@ function ChartContent() {
   };
 
   return (
-    <div className="max-w-[80vw] mx-auto">
+    <div className="w-full">
       <LocalContext.Provider value={handleSubmitSmartFilter}>
-        <div className="flex flex-row w-full gap-1 items-center justify-center px-12">
-          <FilterOptionsDialog />
-          <DisplayTypesDialog displayTypes={DISPLAY_FORMATS} />
-          <div className="ml-auto w-[300px]">
+        <div className="flex flex-row w-full gap-4">
+          {/* Left column for filter options */}
+          <div className="flex flex-col gap-4 min-w-[300px]">
+            <div className="flex flex-row gap-1">
+              <FilterOptionsDialog />
+              <DisplayTypesDialog displayTypes={DISPLAY_FORMATS} />
+            </div>
             <SmartFilter loading={loading} onSubmit={handleSubmitSmartFilter} />
           </div>
-        </div>
-        <div className="flex items-center justify-center mx-auto">
-          <h2 className="text-2xl font-bold">{currentFilter}</h2>
-        </div>
-        {/* Stack chart and table vertically *
-        <div className="flex flex-col w-full gap-4">
-          {/* Chart container 
-          <div className="w-full h-[500px] overflow-auto"> */}
-            {elements}
           
-          {/* Table container */}{/*
-          <div className="w-full overflow-auto">
-            <OrderTable orders={filteredOrders} /> { Add the table here }
+          {/* Main content */}
+          <div className="flex flex-col flex-1 gap-4">
+            <div className="flex items-center justify-center">
+              <h2 className="text-2xl font-bold">{currentFilter}</h2>
+            </div>
+            <div className="flex flex-col w-full gap-4">
+              {/* Chart container */}
+              <div className="w-full h-[500px] overflow-auto">
+                {elements}
+              </div>
+              
+              {/* Table container 
+              <div className="w-full overflow-auto">
+                <OrderTable orders={filteredOrders} />
+              </div>
+              */}
+            </div>
           </div>
-          */}
-        
+        </div>
       </LocalContext.Provider>
     </div>
-  );
+  );  
+  
   
 }
 
