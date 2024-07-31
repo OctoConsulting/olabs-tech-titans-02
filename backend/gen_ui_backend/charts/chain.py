@@ -211,7 +211,7 @@ def filter_data(state: AgentExecutorState) -> AgentExecutorState:
         if is_match:
             filtered_fruits.append(fruits)
 
-    return {"orders": filtered_fruits}
+    return {"fruits": filtered_fruits}
 
 def table_skip(state:AgentExecutorState) -> Literal["skip","display_format"]:
     if state["chart_type"] == "table":
