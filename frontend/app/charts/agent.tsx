@@ -101,20 +101,22 @@ function handleChartType(
   } else if (chartType === "line") {
     ui.append(<LoadingLineChart />);
   }
-  else if (chartType == 'table'){
-    ui.append("No Chart")
-  }
+  // else if (chartType == 'table'){
+  //   ui.append("No Chart")
+  // }
 }
 
 function handleConstructingCharts(
   input: {
-    orders: Fruits[];
+    fruits: Fruits[];
     chartType: ChartType;
     displayFormat: string;
   },
+  
   ui: CreateStreamableUIReturnType,
 ) {
   const chartType = input.chartType
+  console.log(input.fruits)
   if (chartType != 'table'){
     const displayDataObj = DISPLAY_FORMATS.find(
       (d) => d.key === input.displayFormat,
@@ -125,7 +127,8 @@ function handleConstructingCharts(
       );
     }
     let barChart;
-    const props = displayDataObj.propsFn(input.orders);
+    const props = displayDataObj.propsFn(input.fruits);
+    console.log(props)
     if (input.chartType === "bar") {
       barChart = <BarChart {...(props as BarChartProps)} />;
     } else if (input.chartType === "pie") {
@@ -134,6 +137,8 @@ function handleConstructingCharts(
       barChart = <LineChart {...(props as LineChartProps)} />;
     } else
       barChart = "Final No Chart"; 
+
+    console.log(barChart)
     ui.update(
       <>
         <div className="mt-4 mb-6 text-center">
@@ -149,7 +154,7 @@ function handleConstructingCharts(
             {barChart}
           </div>
           <div className="w-full overflow-auto">
-            <OrderTable orders={input.orders} />
+            {/* <OrderTable orders={input.orders} /> */}
           </div>
         </div>,
       </>,
@@ -160,7 +165,7 @@ function handleConstructingCharts(
       <>
         <div className="flex flex-col w-full gap-4">
           <div className="w-full overflow-auto">
-            <OrderTable orders={input.orders} />
+            {/* <OrderTable orders={input.fruits} /> */}
           </div>
         </div>,
       </>,
@@ -206,9 +211,9 @@ function handleDisplayFormat(
 }
 
 
-function updateTable(orders: Fruits[]){
+// function updateTable(orders: Fruits[]){
 
-}
+// }
 
 async function filterGraph(inputs: FilterGraphInput) {
   "use server";
@@ -256,7 +261,8 @@ async function filterGraph(inputs: FilterGraphInput) {
     if (event !== "on_chain_end") {
       return;
     }
-    console.log(name)
+    // console.log(name)
+    
     if (name === "generate_filters") {
       const { selected_filters }: { selected_filters: Partial<Filter> } =
         data.output;

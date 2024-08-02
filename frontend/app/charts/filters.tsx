@@ -177,6 +177,7 @@ This chart would show the total sales for each product.
 export function constructProductSalesBarChartProps(
   fruits: Fruits[],
 ): BarChartProps {
+  console.log("this is where we are");
   const salesByProduct = fruits.reduce(
     (acc, fruit) => {
       if (!acc[fruit.name]) {
