@@ -13,7 +13,7 @@ import {
 import { Suspense, useEffect, useState } from "react";
 import { useActions } from "@/utils/client";
 import { EndpointsContext } from "./agent";
-import { Filter, Fruits, filterSchema } from "./schema";
+import { Filter, Fruits } from "./schema";
 import { LocalContext } from "../shared";
 import { generateFruits } from "./generate-orders";
 import {
@@ -190,7 +190,7 @@ function ChartContent() {
         if (!displayFormatBar) {
           throw new Error("Something went wrong.");
         }
-        console.log(ordersV);
+        //console.log(filterOrders);
         return setElements([
          
           <div className="mt-4 mb-6 text-center">

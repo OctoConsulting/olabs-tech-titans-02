@@ -209,7 +209,7 @@ def filter_data(state: AgentExecutorState) -> AgentExecutorState:
        
         
         if is_match:
-            filtered_fruits.append(fruits)
+            filtered_fruits.append(fruit)
         
     print(filtered_fruits)
     return {"fruits": filtered_fruits}
