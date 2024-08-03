@@ -1,7 +1,7 @@
 import { PieChartProps, BarChartProps, LineChartProps } from "@/lib/mui";
 import { Filter, Fruits } from "./schema";
 
-export type ChartType = "bar" | "line" | "pie" | "table";
+export type ChartType = "bar" | "line" | "pie";
 
 export type DataDisplayTypeAndDescription = {
   /**
@@ -160,7 +160,7 @@ export function filterOrders(state: {
 
     return isMatch;
   });
-
+  console.log(filterOrders);
   return {
     fruits: filteredOrders,
   };
@@ -177,15 +177,17 @@ This chart would show the total sales for each product.
 export function constructProductSalesBarChartProps(
   fruits: Fruits[],
 ): BarChartProps {
+  //console.log(fruits);
   const salesByProduct = fruits.reduce(
     (acc, fruit) => {
+      console.log(fruit)
       if (!acc[fruit.name]) {
         acc[fruit.name] = {price: 0, count:0};
       }
       acc[fruit.name].price += fruit.retailPrice;
-      acc[fruit.name].count += 1
+      acc[fruit.name].count += 1;
       
-
+      //console.log(acc);
       return acc;
     },
     {} as Record<string, {price: number, count: number}>,

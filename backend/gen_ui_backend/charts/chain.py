@@ -57,7 +57,7 @@ to be converted into a structured query. Today is July 25 2024.""",
             ("human", "{input}"),
         ]
     )
-    print(state["fruits"])
+    # print(state["fruits"])
     unique_product_names: List[str] = list(
         
         set(fruits["name"].lower() for fruits in state["fruits"])
@@ -68,8 +68,8 @@ to be converted into a structured query. Today is July 25 2024.""",
     )
     chain = prompt | model
     result = chain.invoke(input=state["input"]["content"])
-    print(state['input'])
-    print(result)
+    # print(state['input'])
+    # print(result)
     return {
         "selected_filters": result,
     }
@@ -121,7 +121,7 @@ Generated filters: {selected_filters}""",
             ),
         }
     )
-
+    # print(result.chart_type)
     return {
         "chart_type": result.chart_type,
     }
@@ -174,7 +174,7 @@ Generated filters: {selected_filters}""",
             ),
         }
     )
-
+    print(result.display_key)
     return {
         "display_format": result.display_key,
     }
@@ -184,7 +184,7 @@ def filter_data(state: AgentExecutorState) -> AgentExecutorState:
     selected_filters = state["selected_filters"]
     fruits = state["fruits"]
 
-    names = selected_filters.names
+    name = selected_filters.name
     retailPrice = selected_filters.retailPrice
     form = selected_filters.form
     # before_date = selected_filters.before_date
@@ -200,17 +200,18 @@ def filter_data(state: AgentExecutorState) -> AgentExecutorState:
     for fruit in fruits:
         is_match = True
 
-        if names and fruit.get("name", "").lower() not in names:
+        if name and fruit.get("name", "").lower() not in name:
             is_match = False
         if form and fruit.get("form", "").lower() not in form:
             is_match = False
         if retailPrice and fruit.get("retailPrice", 0):
-            is_match = True
+            is_match = False
        
         
         if is_match:
-            filtered_fruits.append(fruits)
-
+            filtered_fruits.append(fruit)
+        
+    print(filtered_fruits)
     return {"fruits": filtered_fruits}
 
 def table_skip(state:AgentExecutorState) -> Literal["skip","display_format"]:
@@ -230,8 +231,8 @@ def create_graph() -> CompiledGraph:
 
     # Add edges
     workflow.add_edge("generate_filters", "generate_chart_type")
-    workflow.add_conditional_edges("generate_chart_type",table_skip,{"skip":"filter_data","display_format":"generate_data_display_format"})
-    #workflow.add_edge("generate_chart_type", "generate_data_display_format")
+    # workflow.add_conditional_edges("generate_chart_type",table_skip,{"skip":"filter_data","display_format":"generate_data_display_format"})
+    workflow.add_edge("generate_chart_type", "generate_data_display_format")
     workflow.add_edge("generate_data_display_format", "filter_data")
 
     # Set entry and finish points

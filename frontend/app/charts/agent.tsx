@@ -101,72 +101,57 @@ function handleChartType(
   } else if (chartType === "line") {
     ui.append(<LoadingLineChart />);
   }
-  else if (chartType == 'table'){
-    ui.append("No Chart")
-  }
 }
 
 function handleConstructingCharts(
   input: {
-    orders: Fruits[];
+    fruits: Fruits[];
     chartType: ChartType;
     displayFormat: string;
   },
+  
   ui: CreateStreamableUIReturnType,
 ) {
   const chartType = input.chartType
-  if (chartType != 'table'){
-    const displayDataObj = DISPLAY_FORMATS.find(
-      (d) => d.key === input.displayFormat,
-    );
-    if (!displayDataObj) {
-      throw new Error(
-        `Display format ${input.displayFormat} not found in DISPLAY_FORMATS`,
-      );
-    }
-    let barChart;
-    const props = displayDataObj.propsFn(input.orders);
-    if (input.chartType === "bar") {
-      barChart = <BarChart {...(props as BarChartProps)} />;
-    } else if (input.chartType === "pie") {
-      barChart = <PieChart {...(props as PieChartProps)} />;
-    } else if (input.chartType === "line") {
-      barChart = <LineChart {...(props as LineChartProps)} />;
-    } else
-      barChart = "Final No Chart"; 
-    ui.update(
-      <>
-        <div className="mt-4 mb-6 text-center">
-          <h2 className="text-xl font-semibold text-gray-800 mb-2">
-            {displayDataObj.title}
-          </h2>
-          <p className="text-gray-600 max-w-2xl mx-auto text-sm leading-relaxed">
-            {displayDataObj.description}
-          </p>
-        </div>,
-        <div className="flex flex-col w-full gap-4">
-          <div className="w-full h-[500px] overflow-auto">
-            {barChart}
-          </div>
-          <div className="w-full overflow-auto">
-            <OrderTable orders={input.orders} />
-          </div>
-        </div>,
-      </>,
+
+  const displayDataObj = DISPLAY_FORMATS.find(
+    (d) => d.key === input.displayFormat,
+  );
+  if (!displayDataObj) {
+    throw new Error(
+      `Display format ${input.displayFormat} not found in DISPLAY_FORMATS`,
     );
   }
-  else{
-    ui.update(
-      <>
-        <div className="flex flex-col w-full gap-4">
-          <div className="w-full overflow-auto">
-            <OrderTable orders={input.orders} />
-          </div>
-        </div>,
-      </>,
-    );
-  }
+  let barChart;
+  //console.log(displayDataObj)
+  const props = displayDataObj.propsFn(input.fruits);
+  //console.log(props)
+  if (input.chartType === "bar") {
+    barChart = <BarChart {...(props as BarChartProps)} />;
+  } else if (input.chartType === "pie") {
+    barChart = <PieChart {...(props as PieChartProps)} />;
+  } else if (input.chartType === "line") {
+    barChart = <LineChart {...(props as LineChartProps)} />;
+  } else
+    barChart = "Final No Chart"; 
+  ui.update(
+    <>
+      <div className="mt-4 mb-6 text-center">
+        <h2 className="text-xl font-semibold text-gray-800 mb-2">
+          {displayDataObj.title}
+        </h2>
+        <p className="text-gray-600 max-w-2xl mx-auto text-sm leading-relaxed">
+          {displayDataObj.description}
+        </p>
+      </div>
+      <div className="w-full h-[500px] overflow-auto">
+        {barChart}
+      </div>
+    </>,
+  );
 }
+ 
+
 
 function handleDisplayFormat(
   displayFormat: string,
@@ -174,7 +159,7 @@ function handleDisplayFormat(
   ui: CreateStreamableUIReturnType,
 ) {
   const displayDataObj = DISPLAY_FORMATS.find((d) => d.key === displayFormat);
-  console.log(displayFormat)
+  //console.log(displayFormat)
   if (!displayDataObj) {
     throw new Error(
       `Display format ${displayFormat} not found in DISPLAY_FORMATS`,
@@ -206,9 +191,6 @@ function handleDisplayFormat(
 }
 
 
-function updateTable(orders: Fruits[]){
-
-}
 
 async function filterGraph(inputs: FilterGraphInput) {
   "use server";
@@ -253,10 +235,12 @@ async function filterGraph(inputs: FilterGraphInput) {
       return;
     }
     const { event, name, data } = langGraphEvent;
+    //console.log(data)
     if (event !== "on_chain_end") {
       return;
     }
-    console.log(name)
+    // console.log(name)
+    
     if (name === "generate_filters") {
       const { selected_filters }: { selected_filters: Partial<Filter> } =
         data.output;
@@ -268,15 +252,16 @@ async function filterGraph(inputs: FilterGraphInput) {
       displayFormat = data.output.display_format;
       return handleDisplayFormat(displayFormat, chartType, fields.ui);
     } else if (name === "filter_data") {
-      const { orders } = data.output;
-      if ((chartType != 'table' && !displayFormat) || !chartType) {
+      const {fruits } = data.output;
+      if ( !displayFormat || !chartType) {
         throw new Error(
           "Chart type and display format must be set before filtering data",
         );
       }
+      //console.log(fruits)
       return handleConstructingCharts(
         {
-          orders,
+          fruits,
           chartType,
           displayFormat,
         },

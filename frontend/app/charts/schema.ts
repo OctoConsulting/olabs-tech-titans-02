@@ -16,74 +16,38 @@ export interface Fruits{
   
 }
 
-export const filterSchema = (productNames: string[]) => {
-  const productNamesAsString = productNames
-    .map((p) => p.toLowerCase())
-    .join(", ");
+export const filterSchema = (names: string[]) => {
   return z
     .object({
-      productNames: z
+      names: z
         .array(
           z.enum([
-            productNames[0],
-            ...productNames.slice(1, productNames.length),
+            names[0],
+            ...names.slice(1, names.length),
           ]),
         )
         .optional()
         .describe(
-          `Filter orders by the product name. Lowercase only. MUST only be a list of the following products: ${productNamesAsString}`,
+          `Filter orders by the first name. Lowercase only. MUST only be a list of the following products: ${productNamesAsString}`,
         ),
-      beforeDate: z
-        .string()
-        .transform((str) => new Date(str))
-        .optional()
-        .describe(
-          "Filter orders placed before this date. Must be a valid date in the format 'YYYY-MM-DD'",
-        ),
-      afterDate: z
-        .string()
-        .transform((str) => new Date(str))
-        .optional()
-        .describe(
-          "Filter orders placed after this date. Must be a valid date in the format 'YYYY-MM-DD'",
-        ),
-      minAmount: z
-        .number()
-        .optional()
-        .describe("The minimum amount of the order to filter by."),
-      maxAmount: z
-        .number()
-        .optional()
-        .describe("The maximum amount of the order to filter by."),
-      state: z
-        .string()
-        .optional()
-        .describe(
-          "Filter orders by the state the order was placed in. Example: 'California'",
-        ),
-      discount: z
-        .boolean()
-        .optional()
-        .describe("Filter orders by whether or not it had a discount applied."),
-      minDiscountPercentage: z
+      retailPrice: z
         .number()
         .min(0)
         .max(100)
         .optional()
         .describe(
-          "Filter orders which had at least this amount discounted (in percentage)",
+          "Retail Price of the Fruit",
         ),
-      status: z
+      form: z
         .enum([
-          "pending",
-          "processing",
-          "shipped",
-          "delivered",
-          "cancelled",
-          "returned",
+          "canned",
+          "dried",
+          "fresh",
+          "frozen",
+          "juice",
         ])
         .optional()
-        .describe("The current status of the order."),
+        .describe("The form of the fuirt."),
     })
     .describe("Available filters to apply to orders.");
 };

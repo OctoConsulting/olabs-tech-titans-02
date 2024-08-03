@@ -27,7 +27,7 @@ class Fruits(BaseModel):
 
 
 class Filter(BaseModel):
-    names: Optional[List[str]] = Field(
+    name: Optional[List[str]] = Field(
         None, description="List of product names to filter by"
     )
     form: Optional[str] = Field(
@@ -44,7 +44,7 @@ def filter_schema(product_names: List[str]) -> Type[BaseModel]:
 
     class FilterSchema(BaseModel):
         """Available filters to apply to orders."""
-        names: Optional[List[str]] = Field(
+        name: Optional[List[str]] = Field(
         None, description="List of product names to filter by"
         )
         form: Optional[str] = Field(
