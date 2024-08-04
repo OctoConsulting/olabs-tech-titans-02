@@ -81,9 +81,7 @@ LANGCHAIN_CALLBACKS_BACKGROUND=true
 LANGCHAIN_TRACING_V2=true
 # -----------------------------------------------------
 
-GITHUB_TOKEN=...
 OPENAI_API_KEY=...
-GEOCODE_API_KEY=...
 ```
 
 ## Usage
@@ -104,6 +102,4 @@ cd ../backend
 poetry run start
 ```
 
-## Examples
 
-navigate to localhost:3000/charts
