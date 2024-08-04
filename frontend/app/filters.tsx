@@ -191,7 +191,7 @@ X-axis: orderedAt (Date)
 Y-axis: amount (Number)
 This chart would show the trend of order amounts over time.
  */
-export function constructOrderAmountOverTimeLineChartProps(
+/*export function constructOrderAmountOverTimeLineChartProps(
   orders: Order[],
 ): LineChartProps {
   if (orders.length === 0) {
@@ -230,7 +230,7 @@ export function constructOrderAmountOverTimeLineChartProps(
     ],
     dataset,
   };
-}
+}*/
 
 /**
  * Discount Percentage Distribution
@@ -239,7 +239,7 @@ Y-axis: Count of orders with that discount (Number)
 This chart would show the distribution of discounts across orders.
 Excludes orders which do not have a discount.
  */
-export function constructDiscountDistributionLineChartProps(
+/*export function constructDiscountDistributionLineChartProps(
   orders: Order[],
 ): LineChartProps {
   // Filter orders with discounts
@@ -287,7 +287,7 @@ export function constructDiscountDistributionLineChartProps(
     ],
     dataset,
   };
-}
+}*/
 
 /**
  * Average Order Amount by Month
@@ -295,7 +295,7 @@ X-axis: Month (derived from orderedAt)
 Y-axis: Average amount (Number)
 This chart would show how the average order amount changes month by month.
  */
-export function constructAverageOrderAmountByMonthLineChartProps(
+/*export function constructAverageOrderAmountByMonthLineChartProps(
   orders: Order[],
 ): LineChartProps {
   if (orders.length === 0) {
@@ -350,7 +350,7 @@ export function constructAverageOrderAmountByMonthLineChartProps(
     height: 400,
     dataset,
   };
-}
+}*/
 
 
 export function constructFruitFormDistributionPieChartProps(

@@ -1,4 +1,4 @@
-import { DataDisplayTypeAndDescription } from "@/app/charts/filters";
+import { DataDisplayTypeAndDescription } from "@/app/filters";
 import { Button } from "@/components/ui/button";
 import {
   Dialog,

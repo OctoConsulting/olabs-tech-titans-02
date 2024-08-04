@@ -28,7 +28,7 @@ export const filterSchema = (names: string[]) => {
         )
         .optional()
         .describe(
-          `Filter orders by the first name. Lowercase only. MUST only be a list of the following products: ${productNamesAsString}`,
+          `Filter orders by the first name. Lowercase only. MUST only be a list of the following products: ${names}`,
         ),
       retailPrice: z
         .number()
