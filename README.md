@@ -39,9 +39,9 @@ In this section, you can describe the features your solution has.
 First, clone the repository and install dependencies:
 
 ```bash
-git clone https://github.com/bracesproul/gen-ui-python.git
+git clone https://github.com/OctoConsulting/olabs-tech-titans-02.git
 
-cd gen-ui-python
+cd olab-tech-titans-02
 ```
 
 Install dependencies in the `frontend` and `backend` directories:
@@ -106,4 +106,4 @@ poetry run start
 
 ## Examples
 
-In this section, you can provide practical examples of how one would use the solution.
+navigate to localhost:3000/charts
