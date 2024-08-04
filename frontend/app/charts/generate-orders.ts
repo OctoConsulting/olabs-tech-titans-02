@@ -29,7 +29,7 @@ export function generateFruits(): Fruits[] {
       "juice",
 
     ]),
-    retailPrice: parseFloat(faker.commerce.price())
+    retailPrice: parseFloat(faker.commerce.price({min:1, max: 20}))
   }));
 
   for (let i = 0; i < 25; i++) {

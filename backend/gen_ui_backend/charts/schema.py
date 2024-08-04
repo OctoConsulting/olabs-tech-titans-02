@@ -5,18 +5,6 @@ from langchain_core.pydantic_v1 import BaseModel, Field
 ChartType = Literal["bar", "line", "pie",]
 
 
-class Address(BaseModel):
-    street: str = Field(..., description="The address street.", example="123 Main St")
-    city: str = Field(
-        ..., description="The city the order was shipped to.", example="San Francisco"
-    )
-    state: str = Field(
-        ..., description="The state the order was shipped to.", example="California"
-    )
-    zip: str = Field(
-        ..., description="The zip code the order was shipped to.", example="94105"
-    )
-
 
 class Fruits(BaseModel):
     """CamelCase is used here to match the schema used in the frontend."""

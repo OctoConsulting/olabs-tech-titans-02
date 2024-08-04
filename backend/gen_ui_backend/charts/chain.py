@@ -187,14 +187,7 @@ def filter_data(state: AgentExecutorState) -> AgentExecutorState:
     name = selected_filters.name
     retailPrice = selected_filters.retailPrice
     form = selected_filters.form
-    # before_date = selected_filters.before_date
-    # after_date = selected_filters.after_date
-    # min_amount = selected_filters.min_amount
-    # max_amount = selected_filters.max_amount
-    # order_state = selected_filters.state
-    # discount = selected_filters.discount
-    # min_discount_percentage = selected_filters.min_discount_percentage
-    # status = selected_filters.status
+   
 
     filtered_fruits = []
     for fruit in fruits:
@@ -206,12 +199,10 @@ def filter_data(state: AgentExecutorState) -> AgentExecutorState:
             is_match = False
         if retailPrice and fruit.get("retailPrice", 0):
             is_match = False
-       
         
         if is_match:
             filtered_fruits.append(fruit)
-        
-    print(filtered_fruits)
+            
     return {"fruits": filtered_fruits}
 
 def table_skip(state:AgentExecutorState) -> Literal["skip","display_format"]:

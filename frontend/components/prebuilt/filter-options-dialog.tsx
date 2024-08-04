@@ -45,42 +45,12 @@ export function FilterOptionsDialog() {
 
 const filterOptions = [
   {
-    title: "Product Names",
-    description: "Filter orders by product name (lowercase only).",
+    title: "Names",
+    description: "Filter orders by Fruit name (lowercase only).",
   },
   {
-    title: "Before Date",
-    description: "Filter orders placed before this date (format: YYYY-MM-DD).",
-  },
-  {
-    title: "After Date",
-    description: "Filter orders placed after this date (format: YYYY-MM-DD).",
-  },
-  {
-    title: "Min Amount",
-    description: "The minimum amount of the order to filter by.",
-  },
-  {
-    title: "Max Amount",
-    description: "The maximum amount of the order to filter by.",
-  },
-  {
-    title: "State",
+    title: "Form",
     description:
-      "Filter orders by the state the order was placed in (e.g., 'California').",
-  },
-  {
-    title: "Discount",
-    description: "Filter orders by whether or not a discount was applied.",
-  },
-  {
-    title: "Min Discount Percentage",
-    description:
-      "Filter orders which had at least this amount discounted (in percentage).",
-  },
-  {
-    title: "Status",
-    description:
-      "The current status of the order (pending, processing, shipped, delivered, cancelled, returned).",
+      "Filter fruits by the form they are in (e.g., 'Canned').",
   },
 ];
