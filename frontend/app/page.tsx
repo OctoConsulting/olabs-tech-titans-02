@@ -10,7 +10,7 @@ import {
   PieChart,
   PieChartProps,
 } from "@/lib/mui";
-import { Suspense, useEffect, useState } from "react";
+import { FormEvent, Suspense, useEffect, useState } from "react";
 import { useActions } from "@/utils/client";
 import { EndpointsContext } from "./agent";
 import { Filter, Fruits } from "./schema";
@@ -19,9 +19,9 @@ import { generateFruits } from "./generate-orders";
 import {
   ChartType,
   DISPLAY_FORMATS,
-  constructProductSalesBarChartProps,
-  constructOrderStatusDistributionPieChartProps,
-  constructOrderAmountOverTimeLineChartProps,
+  //constructProductSalesBarChartProps,
+  //constructOrderStatusDistributionPieChartProps,
+  //constructOrderAmountOverTimeLineChartProps,
   DataDisplayTypeAndDescription,
 } from "./filters";
 import { useSearchParams, useRouter } from "next/navigation";
@@ -29,7 +29,7 @@ import { filterOrders } from "./filters";
 import { snakeCase } from "lodash";
 import { DisplayTypesDialog } from "@/components/prebuilt/display-types-dialog";
 import { FilterOptionsDialog } from "@/components/prebuilt/filter-options-dialog";
-import OrderTable from "./data-table";
+import { KeyboardEvent } from 'react';
 
 
 const LOCAL_STORAGE_ORDERS_KEY = "fruits4";
@@ -84,18 +84,15 @@ interface SmartFilterProps {
 function SmartFilter(props: SmartFilterProps) {
   const [input, setInput] = useState("");
 
-  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
-    await props.onSubmit(input);
+  
+  const handleSubmit = async (inputValue: string) => {
+    await props.onSubmit(inputValue);
     setInput("");
   };
-
-  const handleKeyDown = (event) => {
-    if (event.key === 'Enter') {
-      event.preventDefault(); // Prevents default Enter key behavior (new line)
-      handleSubmit(event); // Trigger form submission
-    }
-  };
+  
+  const handleKeyDown = (event: KeyboardEvent) => event.key === 'Enter' && handleSubmit(input);
+  const handleFormSubmit = (e: React.FormEvent<HTMLFormElement>) => handleSubmit(input);
+  
 
   const ButtonContent = () => {
     if (props.loading) {
@@ -118,7 +115,7 @@ function SmartFilter(props: SmartFilterProps) {
   };
 //TODO
   return (
-    <form onSubmit={handleSubmit} className="flex flex-row gap-1">
+    <form onSubmit={handleFormSubmit} className="flex flex-row gap-1">
       <textarea
         disabled={props.loading}
         value={input}
@@ -361,7 +358,7 @@ function ChartContent() {
   };
 
   return (
-    <div className="w-full">
+    <div className="w-full p-12">
       <LocalContext.Provider value={handleSubmitSmartFilter}>
         <div className="flex flex-row w-full gap-4">
           {/* Left column for filter options */}
