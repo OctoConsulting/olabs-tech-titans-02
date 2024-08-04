@@ -28,100 +28,44 @@ export type DataDisplayTypeAndDescription = {
 
 export const DISPLAY_FORMATS: Array<DataDisplayTypeAndDescription> = [
   {
-    key: "bar_order_amount_by_product",
+    key: "bar_average_retail_price_by_fruit",
     title: "Average Retail Price by Fruit",
     chartType: "bar",
     description:
-      "X-axis: Fruit (name)\nY-axis: Average Retail Price (averagePrice)\nThis chart would show the average retail price for each fruit.",
-    propsFn: constructProductSalesBarChartProps,
+      "X-axis: Fruit (name)\n\nY-axis: Average Retail Price (averagePrice)\n\nThis chart would show the average retail price for each fruit.",
+    propsFn: constructAverageRetailPriceByFruitBarChartProps,
   },
   {
-    key: "bar_order_count_by_status",
-    title: "Order Count by Status",
+    key: "bar_average_retail_price_by_form",
+    title: "Average Retail Price by Form",
     chartType: "bar",
     description:
-      "X-axis: Order Status (status)\nY-axis: Number of Orders\nThis chart would display the distribution of orders across different statuses.",
-    propsFn: constructOrderCountByStatusBarChartProps,
+      "X-axis: Form (type)\n\nY-axis:Average Retail Price (averagePrice)\n\nThis chart would show the average retail price for each form.",
+    propsFn: constructAverageRetailPriceByFormBarChartProps,
   },
   {
-    key: "bar_average_discount_by_product",
-    title: "Average Discount by Product Name",
-    chartType: "bar",
-    description:
-      "X-axis: Product Name (productName)\nY-axis: Average Discount Percentage (discount)\nThis chart would show which products have the highest average discounts.",
-    propsFn: constructAverageDiscountByProductBarChartProps,
-  },
-  {
-    key: "bar_order_count_by_state",
-    title: "Order Count by State",
-    chartType: "bar",
-    description:
-      "X-axis: State (address.state)\nY-axis: Number of Orders\nThis chart would visualize the geographic distribution of orders by state.",
-    propsFn: constructOrderCountByStateBarChartProps,
-  },
-  {
-    key: "bar_weekly_order_volume",
-    title: "Weekly Order Volume",
-    chartType: "bar",
-    description:
-      "X-axis: Date (orderedAt, grouped by week)\nY-axis: Number of Orders\nThis chart would show the trend of order volume over time, allowing you to identify peak ordering weeks.",
-    propsFn: constructWeeklyOrderVolumeBarChartProps,
-  },
-  {
-    key: "line_order_amount_over_time",
-    title: "Order Amount Over Time",
-    chartType: "line",
-    description:
-      "X-axis: orderedAt (Date)\nY-axis: amount (Number)\nThis chart would show the trend of order amounts over time.",
-    propsFn: constructOrderAmountOverTimeLineChartProps,
-  },
-  {
-    key: "line_discount_percentage_distribution",
-    title: "Discount Percentage Distribution",
-    chartType: "line",
-    description:
-      "X-axis: discount (Number, 0-100)\nY-axis: Count of orders with that discount (Number)\nThis chart would show the distribution of discounts across orders.\nExcludes orders which do not have a discount.",
-    propsFn: constructDiscountDistributionLineChartProps,
-  },
-  {
-    key: "line_average_order_amount_by_month",
-    title: "Average Order Amount by Month",
-    chartType: "line",
-    description:
-      "X-axis: Month (derived from orderedAt)\nY-axis: Average amount (Number)\nThis chart would show how the average order amount changes month by month.",
-    propsFn: constructAverageOrderAmountByMonthLineChartProps,
-  },
-  {
-    key: "pie_order_status_distribution",
-    title: "Order Status Distribution",
+    key: "pie_fruit_form_distribution",
+    title: "Fruit Form Distribution",
     chartType: "pie",
     description:
-      "Display each status (pending, processing, shipped, delivered, cancelled, returned) as a slice of the pie, with the size of each slice representing the number of orders in that status.\nThis provides a quick overview of the current state of all orders.",
-    propsFn: constructOrderStatusDistributionPieChartProps,
+      "Display each Form  as a slice of the pie, with the size of each slice representing the number of Fruits in that form.\nThis provides a quick overview of the different froms.",
+    propsFn: constructFruitFormDistributionPieChartProps,
   },
   {
-    key: "pie_product_name_popularity",
-    title: "Product Name Popularity",
+    key: "fruit_pie",
+    title: "Fruit Pie",
     chartType: "pie",
     description:
-      "Show each unique productName as a slice, with the size representing the number of orders for that product.\nThis helps identify the most popular products in your store.",
-    propsFn: constructProductPopularityPieChartProps,
+      "Show each unique Fruit as a slice, with the size representing the number of forms for that Fruit.\nThis helps identify the fruits that can be found in different forms.",
+    propsFn: constructFruitPieChartProps,
   },
   {
-    key: "pie_state_wise_order_distribution",
-    title: "State-wise Order Distribution",
+    key: "retail_price_pie",
+    title: "Retail Price Distrution",
     chartType: "pie",
     description:
-      "Use the address.state field to create slices for each state, with slice sizes representing the number of orders from that state.\nThis visualizes which cities generate the most orders.",
-    propsFn: constructDiscountDistributionPieChartProps,
-  },
-  {
-    key: "pie_quarterly_order_distribution",
-    title: "Quarterly Order Distribution",
-    chartType: "pie",
-    description:
-      "Groups orders by quarter using the orderedAt field, with each slice representing a quarter and its size showing the number of orders in that quarter.\nThis visualizes seasonal trends in order volume on a quarterly basis.",
-    propsFn: constructQuarterlyOrderDistributionPieChartProps,
+      "Shows increaments of Retail Price as a slice, with the size representing the number of fruit for that price groups.\nThis helps identify the number fruits that can be found in different price ranges.",
+    propsFn: constructRetailPriceFruitPieChartProps,
   },
 ];
 
@@ -166,15 +110,8 @@ export function filterOrders(state: {
   };
 }
 
-/**
- * Order Amount by Product Name
-X-axis: Product Name (productName)
-Y-axis: Order Amount (amount)
-This chart would show the total sales for each product.
- */
 
-// rename - average retail price per fruit
-export function constructProductSalesBarChartProps(
+export function constructAverageRetailPriceByFruitBarChartProps(
   fruits: Fruits[],
 ): BarChartProps {
   //console.log(fruits);
@@ -194,12 +131,12 @@ export function constructProductSalesBarChartProps(
   );
 
   const dataset = Object.entries(salesByProduct)
-    .map(([name, {price, count}]) => ({ name, averagePrice: count > 0? price / (count * 100): 0, }))
+    .map(([name, {price, count}]) => ({ name, averagePrice: count > 0? price / (count): 0, }))
     .sort((a, b) => b.averagePrice - a.averagePrice);
 
   return {
     xAxis: [{ scaleType: "band", dataKey: "name" }],
-    yAxis: [{scaleType: "linear", max:10}],
+    //yAxis: [{scaleType: "linear", max:10}],
     series: [
       {
         dataKey: "averagePrice",
@@ -210,194 +147,43 @@ export function constructProductSalesBarChartProps(
   };
 }
 
-/**
- * Order Count by Status
-X-axis: Order Status (status)
-Y-axis: Number of Orders
-This chart would display the distribution of orders across different statuses.
- */
-export function constructOrderCountByStatusBarChartProps(
-  orders: Order[],
+export function constructAverageRetailPriceByFormBarChartProps(
+  fruits: Fruits[],
 ): BarChartProps {
-  const orderCountByStatus = orders.reduce(
-    (acc, order) => {
-      acc[order.status] = (acc[order.status] || 0) + 1;
-      return acc;
-    },
-    {} as Record<string, number>,
-  );
-
-  const dataset = Object.entries(orderCountByStatus)
-    .map(([status, count]) => ({ status, count }))
-    .sort((a, b) => b.count - a.count);
-
-  return {
-    xAxis: [{ scaleType: "band", dataKey: "status" }],
-    yAxis: [
-      {
-        scaleType: "linear",
-      },
-    ],
-    series: [
-      {
-        dataKey: "count",
-        label: "Number of Orders",
-      },
-    ],
-    dataset,
-  };
-}
-
-/**
- * Average Discount by Product Name
-X-axis: Product Name (productName)
-Y-axis: Average Discount Percentage (discount)
-This chart would show which products have the highest average discounts.
- */
-export function constructAverageDiscountByProductBarChartProps(
-  orders: Order[],
-): BarChartProps {
-  const discountsByProduct = orders.reduce(
-    (acc, order) => {
-      if (!acc[order.productName]) {
-        acc[order.productName] = { totalDiscount: 0, count: 0 };
+  //console.log(fruits);
+  const salesByProduct = fruits.reduce(
+    (acc, fruit) => {
+      if (!acc[fruit.form]) {
+        acc[fruit.form] = {price: 0, count:0};
       }
-      if (order.discount !== undefined) {
-        acc[order.productName].totalDiscount += order.discount;
-        acc[order.productName].count++;
-      }
+      acc[fruit.form].price += fruit.retailPrice;
+      acc[fruit.form].count += 1;
+      
+      //console.log(acc);
       return acc;
     },
-    {} as Record<string, { totalDiscount: number; count: number }>,
+    {} as Record<string, {price: number, count: number}>,
   );
 
-  const dataset = Object.entries(discountsByProduct)
-    .map(([productName, { totalDiscount, count }]) => ({
-      productName,
-      averageDiscount: count > 0 ? totalDiscount / count : 0,
-    }))
-    .sort((a, b) => b.averageDiscount - a.averageDiscount);
+  const dataset = Object.entries(salesByProduct)
+    .map(([form, {price, count}]) => ({ form, averagePrice: count > 0? price / (count): 0, }))
+    .sort((a, b) => b.averagePrice - a.averagePrice);
 
   return {
-    xAxis: [{ scaleType: "band", dataKey: "productName" }],
-    yAxis: [
-      {
-        scaleType: "linear",
-        max: 100,
-      },
-    ],
+    xAxis: [{ scaleType: "band", dataKey: "form" }],
+    //yAxis: [{scaleType: "linear", max:10}],
     series: [
       {
-        dataKey: "averageDiscount",
-        label: "Average Discount",
+        dataKey: "averagePrice",
+        label: "Average Price",
       },
     ],
     dataset,
   };
 }
 
-/**
- * Order Count by State
-X-axis: State (address.state)
-Y-axis: Number of Orders
-This chart would visualize the geographic distribution of orders by state.
- */
-export function constructOrderCountByStateBarChartProps(
-  orders: Order[],
-): BarChartProps {
-  const orderCountByState = orders.reduce(
-    (acc, order) => {
-      const state = order.address.state;
-      acc[state] = (acc[state] || 0) + 1;
-      return acc;
-    },
-    {} as Record<string, number>,
-  );
 
-  const dataset = Object.entries(orderCountByState)
-    .map(([state, count]) => ({ state, count }))
-    .sort((a, b) => b.count - a.count);
 
-  return {
-    xAxis: [{ scaleType: "band", dataKey: "state" }],
-    yAxis: [
-      {
-        scaleType: "linear",
-      },
-    ],
-    series: [
-      {
-        dataKey: "count",
-        label: "Number of Orders",
-      },
-    ],
-    dataset,
-  };
-}
-
-/**
- * Weekly Order Volume
-X-axis: Date (orderedAt, grouped by week)
-Y-axis: Number of Orders
-This chart would show the trend of order volume over time, allowing you to identify peak ordering weeks.
- */
-export function constructWeeklyOrderVolumeBarChartProps(
-  orders: Order[],
-): BarChartProps {
-  // Helper function to get the start of the week (Sunday) for a given date
-  const getWeekStart = (date: Date): Date => {
-    const d = new Date(date);
-    d.setDate(d.getDate() - d.getDay()); // Set to Sunday
-    d.setHours(0, 0, 0, 0); // Set to midnight
-    return d;
-  };
-
-  // Group orders by week
-  const ordersByWeek = orders.reduce(
-    (acc, order) => {
-      const weekStart = getWeekStart(order.orderedAt);
-      const weekKey = weekStart.toISOString().split("T")[0]; // Get YYYY-MM-DD of week start
-      if (!acc[weekKey]) {
-        acc[weekKey] = 0;
-      }
-      acc[weekKey]++;
-      return acc;
-    },
-    {} as Record<string, number>,
-  );
-
-  // Convert to array and sort by week
-  const dataset = Object.entries(ordersByWeek)
-    .map(([weekStart, count]) => ({ weekStart, count }))
-    .sort((a, b) => a.weekStart.localeCompare(b.weekStart));
-
-  return {
-    xAxis: [
-      {
-        scaleType: "band",
-        dataKey: "weekStart",
-        tickLabelStyle: {
-          angle: 45,
-          textAnchor: "start",
-          dominantBaseline: "hanging",
-        },
-      },
-    ],
-    yAxis: [
-      {
-        scaleType: "linear",
-        label: "Number of Orders",
-      },
-    ],
-    series: [
-      {
-        dataKey: "count",
-        label: "Order Count",
-      },
-    ],
-    dataset,
-  };
-}
 
 /**
  *Order Amount Over Time
@@ -566,25 +352,22 @@ export function constructAverageOrderAmountByMonthLineChartProps(
   };
 }
 
-/**
- * Order Status Distribution:
-Display each status (pending, processing, shipped, delivered, cancelled, returned) as a slice of the pie, with the size of each slice representing the number of orders in that status. This provides a quick overview of the current state of all orders.
- */
-export function constructOrderStatusDistributionPieChartProps(
-  orders: Order[],
+
+export function constructFruitFormDistributionPieChartProps(
+  fruits: Fruits[],
 ): PieChartProps {
-  const statusCounts = orders.reduce(
-    (acc, order) => {
-      acc[order.status] = (acc[order.status] || 0) + 1;
+  const statusCounts = fruits.reduce(
+    (acc, fruit) => {
+      acc[fruit.form] = (acc[fruit.form] || 0) + 1;
       return acc;
     },
     {} as Record<string, number>,
   );
 
-  const data = Object.entries(statusCounts).map(([status, count], index) => ({
+  const data = Object.entries(statusCounts).map(([form, count], index) => ({
     id: index,
     value: count,
-    label: status.charAt(0).toUpperCase() + status.slice(1), // Capitalize first letter
+    label: form.charAt(0).toUpperCase() + form.slice(1), // Capitalize first letter
   }));
 
   return {
@@ -600,26 +383,23 @@ export function constructOrderStatusDistributionPieChartProps(
   };
 }
 
-/**
- * Product Name Popularity:
-Show each unique productName as a slice, with the size representing the number of orders for that product. This helps identify the most popular products in your store.
- */
-export function constructProductPopularityPieChartProps(
-  orders: Order[],
+
+export function constructFruitPieChartProps(
+  fruits: Fruits[],
 ): PieChartProps {
-  const productCounts = orders.reduce(
-    (acc, order) => {
-      acc[order.productName] = (acc[order.productName] || 0) + 1;
+  const productCounts = fruits.reduce(
+    (acc, fruit) => {
+      acc[fruit.name] = (acc[fruit.name] || 0) + 1;
       return acc;
     },
     {} as Record<string, number>,
   );
 
   const data = Object.entries(productCounts)
-    .map(([productName, count], index) => ({
+    .map(([name, count], index) => ({
       id: index,
       value: count,
-      label: productName,
+      label: name,
     }))
     .sort((a, b) => b.value - a.value); // Sort by count in descending order
 
@@ -643,78 +423,28 @@ export function constructProductPopularityPieChartProps(
   };
 }
 
-/**
- * State-wise Order Distribution:
-Use the address.state field to create slices for each state, with slice sizes representing the number of orders from that state. This visualizes which cities generate the most orders.
- */
-export function constructDiscountDistributionPieChartProps(
-  orders: Order[],
+
+export function constructRetailPriceFruitPieChartProps(
+  fruits: Fruits[],
 ): PieChartProps {
-  const discountCounts = orders.reduce(
-    (acc, order) => {
-      if (order.discount !== undefined) {
-        acc.discounted++;
-      } else {
-        acc.nonDiscounted++;
-      }
-      return acc;
-    },
-    { discounted: 0, nonDiscounted: 0 },
-  );
-
-  const data = [
-    { id: 0, value: discountCounts.discounted, label: "Discounted" },
-    { id: 1, value: discountCounts.nonDiscounted, label: "Non-discounted" },
-  ];
-
-  return {
-    series: [
-      {
-        data,
-        highlightScope: { faded: "global", highlighted: "item" },
-        faded: { innerRadius: 30, additionalRadius: -30 },
-      },
-    ],
-    margin: { top: 10, bottom: 10, left: 10, right: 10 },
-    legend: { hidden: false },
-  };
-}
-
-/**
- * Quarterly Order Distribution:
- * Groups orders by quarter using the orderedAt field, with each slice representing
- * a quarter and its size showing the number of orders in that quarter. This
- * visualizes seasonal trends in order volume on a quarterly basis.
- */
-export function constructQuarterlyOrderDistributionPieChartProps(
-  orders: Order[],
-): PieChartProps {
-  const quarterlyOrderCounts = orders.reduce(
-    (acc, order) => {
-      const date = new Date(order.orderedAt);
-      const year = date.getFullYear();
-      const quarter = Math.floor(date.getMonth() / 3) + 1;
-      const quarterKey = `Q${quarter} ${year}`;
-      acc[quarterKey] = (acc[quarterKey] || 0) + 1;
+  // Group fruits by retail price
+  const priceGroups = fruits.reduce(
+    (acc, fruit) => {
+      const priceGroup = (Math.round(fruit.retailPrice)).toString();
+      acc[priceGroup] = (acc[priceGroup] || 0) + 1;
       return acc;
     },
     {} as Record<string, number>,
   );
 
-  const data = Object.entries(quarterlyOrderCounts)
-    .map(([quarterYear, count], index) => ({
+  // Create data for the pie chart
+  const data = Object.entries(priceGroups)
+    .map(([priceGroup, count], index) => ({
       id: index,
       value: count,
-      label: quarterYear,
+      label: priceGroup,
     }))
-    .sort((a, b) => {
-      const [aQuarter, aYear] = a.label.split(" ");
-      const [bQuarter, bYear] = b.label.split(" ");
-      return (
-        parseInt(aYear) - parseInt(bYear) ||
-        parseInt(aQuarter.slice(1)) - parseInt(bQuarter.slice(1))
-      );
-    });
+    .sort((a, b) => b.value - a.value); // Sort by count in descending order
 
   return {
     series: [
@@ -735,3 +465,8 @@ export function constructQuarterlyOrderDistributionPieChartProps(
     },
   };
 }
+
+
+
+
+

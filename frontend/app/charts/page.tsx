@@ -32,7 +32,7 @@ import { FilterOptionsDialog } from "@/components/prebuilt/filter-options-dialog
 import OrderTable from "./data-table";
 
 
-const LOCAL_STORAGE_ORDERS_KEY = "fruits2";
+const LOCAL_STORAGE_ORDERS_KEY = "fruits4";
 
 const getFiltersFromUrl = (
   searchParams: URLSearchParams,
@@ -174,14 +174,20 @@ function ChartContent() {
     // Set the chart on fresh load. Use either the chartType from the URL or the default.
     // Also extract any filters to apply to the chart.
     const selectedChart = searchParams.get("chartType") || selectedChartType;
-  const filters = getFiltersFromUrl(searchParams, ordersV);
-  const { fruits: filteredOrders } = filterOrders({
-    fruits: ordersV,
-    selectedFilters: filters,
+    const filters = getFiltersFromUrl(searchParams, ordersV);
+    const { fruits: filteredOrders } = filterOrders({
+      fruits: ordersV,
+      selectedFilters: filters,
   });
   setFilteredOrders(filteredOrders ?? ordersV); 
-
-    switch (selectedChart) {
+    setElements([
+      <div className="mt-4 mb-6 text-center">
+        <h2 className="text-xl font-semibold text-gray-800 mb-2">
+          {"Use the Magic Filter to Generate a Chart"}
+        </h2>
+      </div>
+    ]);
+    /*switch (selectedChart) {
       case "bar":
         const displayFormatKeyBar = "bar_order_amount_by_product";
         const displayFormatBar = DISPLAY_FORMATS.find(
@@ -209,9 +215,6 @@ function ChartContent() {
               ) as BarChartProps)}
               key="start-bar"
             />
-            </div>
-            <div className="w-full overflow-auto">
-              {/* <OrderTable orders={filteredOrders} /> */}
             </div>
           </div>
         ]);
@@ -263,7 +266,7 @@ function ChartContent() {
             key="start-line"
           />,
         ]);
-    }
+    }*/
   }, [fruits.length, searchParams, selectedChartType]);
 
   // Update the URL with the selected filters and chart type.
